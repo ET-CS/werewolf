@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ET-CS/werewolf.svg?branch=master)](https://travis-ci.org/ET-CS/werewolf
+[![Build Status](https://travis-ci.org/ET-CS/werewolf.svg?branch=master)](https://travis-ci.org/ET-CS/werewolf)
 
 Werewolf
 ========
