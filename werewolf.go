@@ -59,19 +59,25 @@ func main() {
 	http.Handle("/", r)
 
 	for key, value := range m {
+		// index is /
 		if key == "index" {
 			key = ""
 		}
+		// load file into html string
 		fc, err := ioutil.ReadFile(value)
 		if err != nil {
 			log.Fatal("ioutil: ", err)
 		}
 		html := string(fc)
+		// create handler to serve html
 		r.HandleFunc("/"+key, func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, html)
 		}).Methods("GET")
 
 	}
+
+	// Serve static
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./")))
 
 	// Starting server
 	port := "8585"
