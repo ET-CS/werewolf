@@ -20,7 +20,7 @@ the server will run on port 8585 and will serve your html files.
 * Other files will be on route as filename (for example `about.html` will be `example.com/about`)
 * If there are minified files (`index.min.html`) inside the directory - they will be threated too by the same logic. (`about.min.html` will be `example.com/about`)
 * If there are two files - one minified and one is not (index.html and index.min.html for example) Werewold will use the minified one.
-* Any other file except [html,css,js] will be served as static.
+* Any other file except .html files will be served as static.
 
 All html files are cached into memory for performance on server start.
 
