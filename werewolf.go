@@ -22,23 +22,34 @@ func getAppDir() string {
 	return dir
 }
 
+var (
+    // Directory where 'werewolf' is currently running in
+    projectDir = getAppDir()
+)
+
 // Map of all htmls found on walk
 var m map[string]string
 
 func visit(path string, f os.FileInfo, err error) error {
+	// relative path without projectDir
+	rpath := path[len(projectDir):]
 	// Check if file is html file
 	isHTML := strings.HasSuffix(path, ".html")
 	if isHTML {
-		s := strings.Split(path, "/")
+		// get only file from path
+		s := strings.Split(rpath, "/")
 		// get filename from path (index.min.html or index.html)
 		fn := s[len(s)-1]
-		// get filename with extension (index.min or index)
+		// get filename without extension (index.min or index)
 		fn = fn[:len(fn)-5]
+		// remove .min if minified
 		isMinifiedHTML := strings.HasSuffix(fn, ".min")
 		if isMinifiedHTML {
 			// remove .min from filename (index)
 			fn = fn[:len(fn)-4]
 		}
+		// TODO get the relative path `/post/` from `/post/1.html` so it will be `/post/1` in the end and not `/1`
+		// TODO replace current map to hold struct with {path, rpath, fn}
 		m[fn] = path
 	}
 	return nil
@@ -48,7 +59,7 @@ func visit(path string, f os.FileInfo, err error) error {
 func main() {
 	m = make(map[string]string)
 	// Find html files to serve
-	err := filepath.Walk(getAppDir(), visit)
+	err := filepath.Walk(projectDir, visit)
 	if err != nil {
 		log.Fatal("Walk: ", err)
 	}
@@ -69,6 +80,9 @@ func main() {
 			log.Fatal("ioutil: ", err)
 		}
 		html := string(fc)
+		// get relative path with projectDir
+		rpath := value[len(projectDir):]
+		fmt.Printf("serving " + rpath + " on /" + key + "\n")
 		// create handler to serve html
 		r.HandleFunc("/"+key, func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, html)
